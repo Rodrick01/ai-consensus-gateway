@@ -77,6 +77,16 @@ func consensusHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(ConsensusResponse{ConsensusResult: result})
 }
 
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method Not Allowed. Use GET.", http.StatusMethodNotAllowed)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"status": "UP", "service": "ai-consensus-gateway"})
+}
+
 func main() {
 	logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		Level: slog.LevelDebug,
@@ -89,6 +99,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/consensus", consensusHandler)
+	mux.HandleFunc("/health", healthHandler)
 
 	logger.Info("Iniciando AI Consensus Gateway", slog.String("puerto", port))
 	

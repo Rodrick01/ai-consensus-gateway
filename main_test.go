@@ -51,6 +51,15 @@ func TestConsensusHandler(t *testing.T) {
 		t.Errorf("Esperaba status 400 Bad Request, recibí %d", wBad.Code)
 	}
 
+	// Test Health Check
+	reqHealth := httptest.NewRequest(http.MethodGet, "/health", nil)
+	wHealth := httptest.NewRecorder()
+	healthHandler(wHealth, reqHealth)
+
+	if wHealth.Code != http.StatusOK {
+		t.Errorf("Esperaba status 200 OK para /health, recibí %d", wHealth.Code)
+	}
+
 	// Un test simple de validez de structs
 	if reqBody.Context == "" {
 		t.Error("El contexto no debería estar vacío")
