@@ -11,20 +11,24 @@ import (
 	"github.com/Rodrick01/ai-consensus-gateway/internal/ai"
 )
 
+// ConsensusRequest represents the incoming JSON request for the consensus endpoint.
 type ConsensusRequest struct {
-	Context   string `json:"context"`
-	Objective string `json:"objective"`
-	Thinker   string `json:"thinker,omitempty"`   // ej: "gemini", "claude", "gpt"
-	Auditor   string `json:"auditor,omitempty"`   // ej: "gemini", "claude", "gpt"
+	Context   string `json:"context"`             // The raw data or context for the AI.
+	Objective string `json:"objective"`           // The objective or problem to solve.
+	Thinker   string `json:"thinker,omitempty"`   // The primary AI provider (e.g., "gemini", "claude", "gpt").
+	Auditor   string `json:"auditor,omitempty"`   // The auditing AI provider (e.g., "gemini", "claude", "gpt").
 }
 
+// ConsensusResponse represents the JSON response returned by the consensus endpoint.
 type ConsensusResponse struct {
-	ConsensusResult string `json:"consensus_result"`
-	Error           string `json:"error,omitempty"`
+	ConsensusResult string `json:"consensus_result"`      // The final agreed-upon solution.
+	Error           string `json:"error,omitempty"`       // Error message, if any occurred.
 }
 
 var logger *slog.Logger
 
+// getProvider returns the requested LLMProvider based on the given name.
+// It defaults to Gemini if the provider is unknown or empty.
 func getProvider(name string) ai.LLMProvider {
 	switch name {
 	case "claude":
@@ -39,6 +43,8 @@ func getProvider(name string) ai.LLMProvider {
 	}
 }
 
+// consensusHandler processes requests to the consensus endpoint.
+// It orchestrates the Dual-LLM Verification process by invoking the Thinker and Auditor AIs.
 func consensusHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método no permitido. Usa POST.", http.StatusMethodNotAllowed)
@@ -77,6 +83,7 @@ func consensusHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(ConsensusResponse{ConsensusResult: result})
 }
 
+// healthHandler provides a simple Liveness/Readiness probe endpoint.
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed. Use GET.", http.StatusMethodNotAllowed)

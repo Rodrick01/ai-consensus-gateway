@@ -9,11 +9,13 @@ import (
 	"time"
 )
 
+// GeminiProvider is an LLMProvider implementation for Google's Gemini models.
 type GeminiProvider struct {
 	apiKey     string
 	httpClient *http.Client
 }
 
+// NewGeminiProvider creates a new instance of GeminiProvider with the given API key.
 func NewGeminiProvider(apiKey string) *GeminiProvider {
 	return &GeminiProvider{
 		apiKey: apiKey,
@@ -23,10 +25,12 @@ func NewGeminiProvider(apiKey string) *GeminiProvider {
 	}
 }
 
+// Name returns the provider name.
 func (p *GeminiProvider) Name() string {
 	return "Google-Gemini"
 }
 
+// Ask sends the prompt to the Google Gemini API and returns the response.
 func (p *GeminiProvider) Ask(ctx context.Context, prompt string) (string, error) {
 	type part struct {
 		Text string `json:"text"`
