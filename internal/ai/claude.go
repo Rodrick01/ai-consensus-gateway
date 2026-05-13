@@ -9,11 +9,13 @@ import (
 	"time"
 )
 
+// ClaudeProvider is an LLMProvider implementation for Anthropic's Claude models.
 type ClaudeProvider struct {
 	apiKey     string
 	httpClient *http.Client
 }
 
+// NewClaudeProvider creates a new instance of ClaudeProvider with the given API key.
 func NewClaudeProvider(apiKey string) *ClaudeProvider {
 	return &ClaudeProvider{
 		apiKey: apiKey,
@@ -23,10 +25,12 @@ func NewClaudeProvider(apiKey string) *ClaudeProvider {
 	}
 }
 
+// Name returns the provider name.
 func (p *ClaudeProvider) Name() string {
 	return "Anthropic-Claude"
 }
 
+// Ask sends the prompt to the Anthropic Claude API and returns the response.
 func (p *ClaudeProvider) Ask(ctx context.Context, prompt string) (string, error) {
 	type message struct {
 		Role    string `json:"role"`

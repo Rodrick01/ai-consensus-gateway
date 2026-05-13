@@ -9,11 +9,13 @@ import (
 	"time"
 )
 
+// GPTProvider is an LLMProvider implementation for OpenAI's GPT models.
 type GPTProvider struct {
 	apiKey     string
 	httpClient *http.Client
 }
 
+// NewGPTProvider creates a new instance of GPTProvider with the given API key.
 func NewGPTProvider(apiKey string) *GPTProvider {
 	return &GPTProvider{
 		apiKey: apiKey,
@@ -23,10 +25,12 @@ func NewGPTProvider(apiKey string) *GPTProvider {
 	}
 }
 
+// Name returns the provider name.
 func (p *GPTProvider) Name() string {
 	return "OpenAI-GPT"
 }
 
+// Ask sends the prompt to the OpenAI GPT API and returns the response.
 func (p *GPTProvider) Ask(ctx context.Context, prompt string) (string, error) {
 	// Estructura estricta para evitar Heap Allocations masivas (Regla SRE #2)
 	type message struct {
